@@ -1,0 +1,47 @@
+npm i
+npm run server
+
+google search 
+atlas mongodb login
+https://account.mongodb.com/account/login
+narresh.gudimetlaa@gmail.com
+Uzwall12578*
+
+
+
+CLERK FOR LMS PROJECT:
+=====================
+E:\MURALI\PERN-ADVANCED-APPLICATION\6ipvxavE65KGJJXsDuYoEu\25 Full Stack Projects\16 Full-Stack-LMS-app\lms-full-stack\server
+# Clerk Setup
+CLERK_WEBHOOK_SECRET = "whsec_OQJcnzD8xFDg0hk5hURmYMPZySCl9CK+"
+CLERK_PUBLISHABLE_KEY = "pk_test_aW4tZmluY2gtMjIuY2xlcmsuYWNjb3VudHMuZGV2JA"
+CLERK_SECRET_KEY = "sk_test_To5QAqSE1yN5KGu6ePQ9tS1L0tkccASmJareIo1chy"
+https://ngrok-url/api/webhooks/clerk
+whsec_OQJcnzD8xFDg0hk5hURmYMPZySCl9CK+
+
+START NGROK:
+===========
+--------------------------------------------
+OPEN CMD AND RUN THE FOLLOWING FROM ANYWHERE
+ngrok http 5000
+--------------------------------------------
+ngrok                                                                                                   (Ctrl+C to quit)                                                                                                                        🐠 One gateway for every AI model. Available in early access *now*: https://ngrok.com/r/ai 
+Session Status                online                                                                                    Account                       gvnaressh@gmail.com (Plan: Free)                                                          Update                        update available (version 3.37.2, Ctrl-U to update)                                       Version                       3.33.1                                                                                    Region                        India (in)                                                                                Latency                       49ms                                                                                      Web Interface                 http://127.0.0.1:4040   
+Forwarding                    https://f145-2401-4900-88e1-f7de-8445-57e1-b3a5-2fef.ngrok-free.app -> http://localhost:50                                                                                                                        Connections                   ttl     opn     rt1     rt5     p50     p90                                                                             0       0       0.00    0.00    0.00    0.00  
+
+ADD THIS NGROK URL IN WEBHOOKS SECTION FOR LOCAL TESTING:configure-->find-->web hooks-->edit
+=========================================================
+https://d108-2401-4900-88e1-f7de-8445-57e1-b3a5-2fef.ngrok-free.app/api/webhooks/clerk
+https://aefb-2401-4900-88e1-f7de-8445-57e1-b3a5-2fef.ngrok-free.app/api/webhooks/clerk
+CHANGE ABOVE URL IN CLERK-LMS-WEB HOOKS-END POINT
+
+ENSURE SAME PUBLISHABLE CLERK KEY IN FRONTEND AS WELL
+VITE_CLERK_PUBLISHABLE_KEY=pk_test_aW4tZmluY2gtMjIuY2xlcmsuYWNjb3VudHMuZGV2JA
+VITE_BACKEND_URL = 'http://localhost:5000'
+VITE_CURRENCY = '$'
+
+
+https://youtu.be/Ihy0QziLDf0
+
+
+IF RESTARTING NGROK...UPDATE END-POINT-URL IN BOTH STRIPE AND CLERK

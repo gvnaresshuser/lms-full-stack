@@ -1,0 +1,221 @@
+
+FINAL steps** for configuring **Webhook Endpoints in Clerk and Stripe**.
+
+---
+
+# ✅ ⭐ CLERK Webhook Configuration (User Sync)
+
+## Step-1️⃣ Login to Clerk Dashboard
+
+Go to:
+
+👉 [https://dashboard.clerk.com](https://dashboard.clerk.com)
+
+Select your **Application (Example: LMS)**
+
+---
+
+## Step-2️⃣ Go to Webhooks Section
+
+Left menu:
+
+```
+Configure → Webhooks
+```
+
+Click:
+
+```
+Add Endpoint
+```
+
+---
+
+## Step-3️⃣ Add Endpoint URL
+
+For **local development (ngrok)**
+
+```
+https://YOUR-NGROK-URL.ngrok-free.app/api/webhooks/clerk
+```
+
+Example:
+
+```
+https://9e18-xxxx.ngrok-free.app/api/webhooks/clerk
+```
+
+For **production**
+
+```
+https://yourbackend.com/api/webhooks/clerk
+```
+
+---
+
+## Step-4️⃣ Select Events
+
+Select these:
+
+```
+user.created
+user.updated
+user.deleted
+```
+
+Click **Create**
+
+---
+
+## Step-5️⃣ Copy Signing Secret
+
+Clerk will show:
+
+```
+Signing Secret → whsec_xxxxxxxxx
+```
+
+Put this in backend `.env`
+
+```
+CLERK_WEBHOOK_SECRET=whsec_xxxxxxxxx
+```
+
+---
+
+## Step-6️⃣ Important Server Route
+
+Your Node route must match URL:
+
+```js
+app.post(
+  "/api/webhooks/clerk",
+  express.raw({ type: "application/json" }),
+  clerkWebhooks
+);
+```
+
+---
+
+# ✅ ⭐ STRIPE Webhook Configuration (Payment Sync)
+
+## Step-1️⃣ Login to Stripe Dashboard
+
+👉 [https://dashboard.stripe.com](https://dashboard.stripe.com)
+
+Go to:
+
+```
+Developers → Webhooks
+```
+
+(or new UI → **Event destinations**)
+
+---
+
+## Step-2️⃣ Add Destination
+
+Click:
+
+```
+Add destination → Webhooks
+```
+
+---
+
+## Step-3️⃣ Add Endpoint URL
+
+For **local dev**
+
+```
+https://YOUR-NGROK-URL.ngrok-free.app/stripe
+```
+
+Example:
+
+```
+https://9e18-xxxx.ngrok-free.app/stripe
+```
+
+For **production**
+
+```
+https://yourbackend.com/stripe
+```
+
+---
+
+## Step-4️⃣ Select Events (Very Important)
+
+Select:
+
+```
+checkout.session.completed   ⭐
+payment_intent.succeeded
+payment_intent.payment_failed
+```
+
+Click **Add destination**
+
+---
+
+## Step-5️⃣ Copy Signing Secret
+
+Stripe shows:
+
+```
+Signing Secret → whsec_xxxxxxxxx
+```
+
+Add to `.env`
+
+```
+STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxx
+```
+
+Restart server.
+
+---
+
+## Step-6️⃣ Important Server Route
+
+```js
+app.post(
+  "/stripe",
+  express.raw({ type: "application/json" }),
+  stripeWebhooks
+);
+```
+
+---
+
+# ⭐ Very Important Real-World Rules
+
+✅ Each project must have **separate webhook endpoint**
+✅ Each environment must have **separate signing secret**
+
+Example:
+
+| Environment    | Clerk URL      | Stripe URL     |
+| -------------- | -------------- | -------------- |
+| Local LMS      | ngrok URL      | ngrok URL      |
+| Production LMS | Render/AWS URL | Render/AWS URL |
+| GoCart         | Vercel URL     | Vercel URL     |
+
+---
+
+# ⭐ Development Flow Summary
+
+```
+Signup → Clerk → Webhook → MongoDB user created
+
+Payment → Stripe → Webhook → Purchase completed → Enrollment updated
+```
+
+---
+
+If you want 👍
+Next I can give you:
+
+✅ **Complete deployment steps for LMS (Frontend + Backend + MongoDB + Clerk + Stripe)**
+This is usually the **next big step after local testing**.

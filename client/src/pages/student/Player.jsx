@@ -1,0 +1,351 @@
+import React, { useContext, useEffect, useState } from 'react';
+import { AppContext } from '../../context/AppContext';
+import YouTube from 'react-youtube';
+import { assets } from '../../assets/assets';
+import { useParams } from 'react-router-dom';
+import humanizeDuration from 'humanize-duration';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import Rating from '../../components/student/Rating';
+import Footer from '../../components/student/Footer';
+import Loading from '../../components/student/Loading';
+
+const Player = ({ }) => {
+
+  const { enrolledCourses, backendUrl, getToken, calculateChapterTime, userData, fetchUserEnrolledCourses } = useContext(AppContext);
+
+  const { courseId } = useParams();
+  const [courseData, setCourseData] = useState(null);
+  const [progressData, setProgressData] = useState(null);
+  const [openSections, setOpenSections] = useState({});
+  const [playerData, setPlayerData] = useState(null);
+  const [initialRating, setInitialRating] = useState(0);
+  //-------------------------------------------------------
+  console.log("PROGRESS =", progressData);
+  console.log("COURSE =", courseData);
+  const [progressPercent, setProgressPercent] = useState(0);
+  const calculateProgress = () => {
+    if (!courseData || !progressData) return;
+
+    const total = courseData.courseContent.reduce(
+      (sum, ch) => sum + ch.chapterContent.length,
+      0
+    )
+
+    const completed = progressData?.lectureCompleted?.length || 0;
+
+    if (total === 0) {
+      setProgressPercent(0);
+      return;
+    }
+
+    setProgressPercent(Math.round((completed / total) * 100));
+  };
+  //-------------------------------------------------------
+
+/*   const getCourseData = () => {
+    enrolledCourses.map((course) => {
+      if (course._id === courseId) {
+        setCourseData(course);
+        course.courseRatings.map((item) => {
+          if (item.userId === userData._id) {
+            setInitialRating(item.rating);
+          }
+        });
+      }
+    });
+  }; */
+  const getCourseData = () => {
+
+    const found = enrolledCourses.find(
+      c => String(c._id) === String(courseId)
+    );
+
+    if (found) {
+      setCourseData(found);
+
+      found.courseRatings?.forEach((item) => {
+        if (item.userId === userData?._id) {
+          setInitialRating(item.rating);
+        }
+      });
+    }
+
+  }
+
+  const toggleSection = (index) => {
+    setOpenSections((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
+
+  //-----------------------------
+  useEffect(() => {
+    calculateProgress();
+  }, [progressData, courseData]);
+  //-----------------------------
+  const playNextLecture = () => {
+    if (!playerData) return;
+
+    const chapterIndex = playerData.chapter - 1;
+    const lectureIndex = playerData.lecture - 1;
+
+    const chapter = courseData.courseContent[chapterIndex];
+
+    // next lecture in same chapter
+    if (chapter.chapterContent[lectureIndex + 1]) {
+      const next = chapter.chapterContent[lectureIndex + 1];
+      setPlayerData({
+        ...next,
+        chapter: chapterIndex + 1,
+        lecture: lectureIndex + 2
+      });
+      return;
+    }
+
+    // next chapter first lecture
+    if (courseData.courseContent[chapterIndex + 1]) {
+      const next = courseData.courseContent[chapterIndex + 1].chapterContent[0];
+      setPlayerData({
+        ...next,
+        chapter: chapterIndex + 2,
+        lecture: 1
+      });
+    }
+  };
+  //-----------------------------
+
+
+/*   useEffect(() => {
+    if (enrolledCourses.length > 0) {
+      getCourseData();
+    }
+  }, [enrolledCourses]); */
+  
+  useEffect(() => {
+    if (enrolledCourses.length > 0 && courseId) {
+      getCourseData();
+    }
+  }, [enrolledCourses, courseId])
+
+  const markLectureAsCompleted = async (lectureId) => {
+
+    try {
+
+      const token = await getToken();
+
+      const { data } = await axios.post(backendUrl + '/api/user/update-course-progress',
+        { courseId, lectureId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (data.success) {
+        toast.success(data.message);
+        getCourseProgress();
+      } else {
+        toast.error(data.message);
+      }
+
+    } catch (error) {
+      toast.error(error.message);
+    }
+
+  };
+
+  const getCourseProgress = async () => {
+
+    try {
+
+      const token = await getToken();
+      console.log("Token for fetching course progress:", token); // Debugging line
+
+      const { data } = await axios.post(
+        backendUrl + '/api/user/get-course-progress',
+        { courseId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (data.success) {
+
+        // ⭐ VERY IMPORTANT FIX
+        if (!data.progressData) {
+          setProgressData({ lectureCompleted: [] });
+        } else {
+          setProgressData(data.progressData);
+        }
+
+      } else {
+        toast.error(data.message);
+      }
+
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleRate = async (rating) => {
+
+    try {
+
+      const token = await getToken();
+
+      const { data } = await axios.post(backendUrl + '/api/user/add-rating',
+        { courseId, rating },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (data.success) {
+        toast.success(data.message);
+        fetchUserEnrolledCourses();
+      } else {
+        toast.error(data.message);
+      }
+
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+  //-------------------------------------------
+  const parseYoutubeUrl = (url) => {
+    try {
+      const u = new URL(url);
+
+      let videoId = null;
+      let start = 0;
+
+      // youtu.be
+      if (u.hostname.includes("youtu.be")) {
+        videoId = u.pathname.replace("/", "");
+      }
+
+      // youtube watch
+      if (u.searchParams.get("v")) {
+        videoId = u.searchParams.get("v");
+      }
+
+      // embed
+      if (u.pathname.includes("/embed/")) {
+        videoId = u.pathname.split("/embed/")[1];
+      }
+
+      // start time
+      if (u.searchParams.get("t")) {
+        start = parseInt(u.searchParams.get("t"));
+      }
+
+      return { videoId, start };
+    } catch {
+      return { videoId: null, start: 0 };
+    }
+  };
+  //-------------------------------------------
+
+  useEffect(() => {
+
+    getCourseProgress();
+
+  }, []);
+
+  const yt = playerData ? parseYoutubeUrl(playerData.lectureUrl) : null;
+
+
+  return courseData ? (
+    <>
+
+      <div className='p-4 sm:p-10 flex flex-col-reverse md:grid md:grid-cols-2 gap-10 md:px-36' >
+
+        <div className=" text-gray-800" >
+          <h2 className="text-xl font-semibold">Course Structure</h2>
+          <div className='mb-4'>
+            <p className='font-semibold'>Course Progress: {progressPercent}%</p>
+            <div className='w-full bg-gray-200 h-3 rounded'>
+              <div
+                className='bg-blue-600 h-3 rounded'
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+          </div>
+          <div className="pt-5">
+            {courseData && courseData.courseContent.map((chapter, index) => (
+              <div key={index} className="border border-gray-300 bg-white mb-2 rounded">
+                <div
+                  className="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
+                  onClick={() => toggleSection(index)}
+                >
+                  <div className="flex items-center gap-2">
+                    <img src={assets.down_arrow_icon} alt="arrow icon" className={`transform transition-transform ${openSections[index] ? "rotate-180" : ""}`} />
+                    <p className="font-medium md:text-base text-sm">{chapter.chapterTitle}</p>
+                  </div>
+                  <p className="text-sm md:text-default">{chapter.chapterContent.length} lectures - {calculateChapterTime(chapter)}</p>
+                </div>
+
+                <div className={`overflow-hidden transition-all duration-300 ${openSections[index] ? "max-h-96" : "max-h-0"}`} >
+                  <ul className="list-disc md:pl-10 pl-4 pr-4 py-2 text-gray-600 border-t border-gray-300">
+                    {chapter.chapterContent.map((lecture, i) => (
+                      <li key={i} className="flex items-start gap-2 py-1">
+                        <img src={progressData && progressData.lectureCompleted.includes(lecture.lectureId) ? assets.blue_tick_icon : assets.play_icon} alt="bullet icon" className="w-4 h-4 mt-1" />
+                        <div className="flex items-center justify-between w-full text-gray-800 text-xs md:text-default">
+                          <p>{lecture.lectureTitle}</p>
+                          <div className='flex gap-2'>
+                            {lecture.lectureUrl && <p onClick={() => setPlayerData({ ...lecture, chapter: index + 1, lecture: i + 1 })} className='text-blue-500 cursor-pointer'>Watch</p>}
+                            <p>{humanizeDuration(lecture.lectureDuration * 60 * 1000, { units: ['h', 'm'] })}</p>
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className=" flex items-center gap-2 py-3 mt-10">
+            <h1 className="text-xl font-bold">Rate this Course:</h1>
+            <Rating initialRating={initialRating} onRate={handleRate} />
+          </div>
+
+        </div>
+
+        <div className='md:mt-10'>
+          {
+            playerData
+              ? (
+                <div>
+                  {/* <YouTube iframeClassName='w-full aspect-video' videoId={playerData.lectureUrl.split('/').pop()} /> */}
+                  <YouTube
+                    iframeClassName='w-full aspect-video'
+                    videoId={yt.videoId}
+                    opts={{
+                      playerVars: {
+                        autoplay: 1,
+                        start: yt.start
+                      }
+                    }}
+                    onEnd={() => {
+                      setProgressData(prev => ({
+                        lectureCompleted: [
+                          ...((prev && prev.lectureCompleted) || []),
+                          playerData.lectureId
+                        ]
+                      }));
+                      markLectureAsCompleted(playerData.lectureId);
+                      playNextLecture();
+                    }}
+                  />
+                  <div className='flex justify-between items-center mt-1'>
+                    <p className='text-xl '>{playerData.chapter}.{playerData.lecture} {playerData.lectureTitle}</p>
+                    <button onClick={() => markLectureAsCompleted(playerData.lectureId)} className='text-blue-600'>{progressData && progressData.lectureCompleted.includes(playerData.lectureId) ? 'Completed' : 'Mark Complete'}</button>
+                  </div>
+                </div>
+              )
+              : <img src={courseData ? courseData.courseThumbnail : ''} alt="" />
+          }
+        </div>
+      </div>
+      <Footer />
+    </>
+  ) : <Loading />;
+};
+
+export default Player;

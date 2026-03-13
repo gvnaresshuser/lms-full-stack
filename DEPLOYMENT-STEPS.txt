@@ -1,0 +1,422 @@
+Deploy your **LMS Full Stack project (client + server)** in **Vercel**.
+
+👉 I will give you **complete step-by-step from GitHub repo creation → Vercel deployment → making live URL**.
+
+---
+
+# ✅ Step 1 — Prepare Your LMS Project Structure
+
+Your project should look like this:
+
+```
+lms-project
+   client   (React / Vite / Next etc)
+   server   (Node / Express backend)
+```
+
+Very important:
+
+✅ In **server folder** you must have:
+
+```
+package.json
+index.js / server.js / app.js
+```
+
+✅ In **client folder** you must have:
+
+```
+package.json
+vite.config.js / next.config.js
+```
+
+---
+
+# ✅ Step 2 — Create GitHub Repository
+
+### 👉 Open
+
+[https://github.com](https://github.com)
+
+### 👉 Click
+
+**New Repository**
+
+### 👉 Fill details
+
+```
+Repository name → lms-project
+Public / Private → your wish
+Do NOT initialize with README
+```
+
+Click
+✅ **Create repository**
+
+---
+
+# ✅ Step 3 — Upload Your LMS Project to GitHub
+
+Now open **VS Code terminal** inside your LMS root folder.
+
+Example path:
+
+```
+E:\lms-project
+```
+
+Run:
+
+```bash
+git init
+git add .
+git commit -m "initial commit lms"
+```
+
+Now connect GitHub repo:
+
+👉 Copy repo URL from GitHub like:
+
+```
+https://github.com/username/lms-project.git
+```
+
+Then run:
+
+```bash
+git branch -M main
+git remote add origin https://github.com/username/lms-project.git
+git push -u origin main
+```
+git branch -M main
+git remote add origin https://github.com/gvnaresshuser/lms-full-stack.git
+git push -u origin main
+
+git rm -r --cached .
+git add .
+git commit -m "removed env secrets"
+git push -u origin main
+
+git remote add origin https://github.com/gvnaresshuser/lms-full-stack.git
+
+✅ Now your **client + server both are in GitHub**
+
+---
+
+# ✅ Step 4 — Important Change in Server (VERY IMPORTANT)
+
+Vercel requires **serverless format**
+
+So create file inside **server folder**
+
+```
+server/vercel.json
+```
+
+Add:
+
+```json
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "index.js"
+    }
+  ]
+}
+```
+
+(If your file name is `server.js` change accordingly)
+
+---
+
+# ✅ Step 5 — Deploy CLIENT in Vercel
+
+### 👉 Open
+
+[https://vercel.com](https://vercel.com)
+
+Login using **GitHub**
+
+### 👉 Click
+
+**Add New → Project**
+
+### 👉 Select
+
+`lms-project`
+
+Now configure:
+
+```
+Root Directory → client
+Framework → auto detect
+```
+
+Click
+✅ **Deploy**
+
+After few seconds you will get:
+
+```
+https://lms-client.vercel.app
+```
+
+---
+
+# ✅ Step 6 — Deploy SERVER in Vercel
+
+Again click
+**Add New → Project**
+
+Select same repo again.
+
+Now configure:
+
+```
+Root Directory → server
+Framework → Other
+```
+
+Click
+✅ **Deploy**
+
+Now you will get:
+
+```
+https://lms-server.vercel.app
+```
+
+---
+
+# ✅ Step 7 — Connect Client with Server
+
+In your React client change API URL:
+
+Example:
+
+```js
+axios.defaults.baseURL =
+"https://lms-server.vercel.app"
+```
+
+Then again:
+
+```bash
+git add .
+git commit -m "api updated"
+git push
+```
+
+👉 Vercel will auto redeploy.
+
+---
+
+# ✅ Step 8 — Done 🎉
+
+Now your LMS is live:
+
+```
+Frontend → vercel URL
+Backend → vercel URL
+Database → MongoDB / MySQL cloud
+```
+
+---
+
+# ⭐ VERY IMPORTANT TIPS
+
+✅ Use **MongoDB Atlas**
+(local DB will not work)
+
+✅ Enable **CORS in Express**
+
+```js
+app.use(cors());
+```
+
+✅ Always use:
+
+```
+process.env.PORT
+```
+
+---
+
+# ⭐ If you want
+
+I can give you next:
+
+✅ Perfect **vercel.json for LMS**
+✅ Folder structure check
+✅ Environment variables setup
+✅ Fix common deployment errors
+✅ Make production ready
+
+👉 Just tell me:
+
+**Your server is Express or Next API?**
+**Your client is Vite React or Next?**
+
+I will guide you step-by-step 👍
+
+
+========================================================================
+Microsoft Windows [Version 10.0.26100.6899]
+(c) Microsoft Corporation. All rights reserved.
+
+E:\MURALI\PERN-ADVANCED-APPLICATION\6ipvxavE65KGJJXsDuYoEu\25 Full Stack Projects\16 Full-Stack-LMS-app\lms-full-stack>git init
+Initialized empty Git repository in E:/MURALI/PERN-ADVANCED-APPLICATION/6ipvxavE65KGJJXsDuYoEu/25 Full Stack Projects/16 Full-Stack-LMS-app/lms-full-stack/.git/
+
+E:\MURALI\PERN-ADVANCED-APPLICATION\6ipvxavE65KGJJXsDuYoEu\25 Full Stack Projects\16 Full-Stack-LMS-app\lms-full-stack>git add .
+warning: in the working copy of 'client/src/assets/lesson_icon.svg', LF will be replaced by CRLF the next time Git touches it
+
+E:\MURALI\PERN-ADVANCED-APPLICATION\6ipvxavE65KGJJXsDuYoEu\25 Full Stack Projects\16 Full-Stack-LMS-app\lms-full-stack>git commit -m "initial commit lms"
+[master (root-commit) 84a2450] initial commit lms
+ 137 files changed, 14418 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 6ipvxavE65KGJJXsDuYoEu-25 Full Stack Projects-16 Full-Stack-LMS-app-lms-full-stack.zip
+ create mode 100644 CLERK-STRIPE-SETUP-WEBHOOKS-ENDPOINT-URL.png
+ create mode 100644 CLERK-STRIPE-WEBHOOK-END-POINT-URL-CONFIGURATION.txt
+ create mode 100644 CLERK-WEBHOOK.png
+ create mode 100644 DEPLOYMENT-STEPS.txt
+ create mode 100644 Deployment Steps.png
+ create mode 100644 HOW TO RUN THIS APPLICATION LOCALLY.txt
+ create mode 100644 How_To_Run_Project.pdf
+ create mode 100644 LMS-EDUCATOR-DASHBOARD.png
+ create mode 100644 LMS-STUDENT-DASHBOARD.png
+ create mode 100644 LMS-WEBHOOK-CLERK-ENDPOINT-URL.png
+ create mode 100644 LMS-WEBHOOK-STRIPE-ENDPOINT-URL.png
+ create mode 100644 NGROK RELATED.txt
+ create mode 100644 STRIPE-WEBHOOK-1.png
+ create mode 100644 STRIPE-WEBHOOK.png
+ create mode 100644 clerk-express.png
+ create mode 100644 client.zip
+ create mode 100644 client/.env
+ create mode 100644 client/.env copy
+ create mode 100644 client/.gitignore
+ create mode 100644 client/README.md
+ create mode 100644 client/STEPS.txt
+ create mode 100644 client/XTRA/Player copy.jsx
+ create mode 100644 client/XTRA/Player-All-Formats.jsx
+ create mode 100644 client/XTRA/Player-Original.jsx
+ create mode 100644 client/eslint.config.js
+ create mode 100644 client/index.html
+ create mode 100644 client/package-lock.json
+ create mode 100644 client/package.json
+ create mode 100644 client/postcss.config.js
+ create mode 100644 client/public/favicon.svg
+ create mode 100644 client/src/App.jsx
+ create mode 100644 client/src/assets/accenture_logo.svg
+ create mode 100644 client/src/assets/add_icon.svg
+ create mode 100644 client/src/assets/adobe_logo.svg
+ create mode 100644 client/src/assets/appointments_icon.svg
+ create mode 100644 client/src/assets/arrow_icon.svg
+ create mode 100644 client/src/assets/assets.js
+ create mode 100644 client/src/assets/blue_tick_icon.svg
+ create mode 100644 client/src/assets/course_1.png
+ create mode 100644 client/src/assets/course_2.png
+ create mode 100644 client/src/assets/course_3.png
+ create mode 100644 client/src/assets/course_4.png
+ create mode 100644 client/src/assets/cross_icon.svg
+ create mode 100644 client/src/assets/down_arrow_icon.svg
+ create mode 100644 client/src/assets/dropdown_icon.svg
+ create mode 100644 client/src/assets/earning_icon.svg
+ create mode 100644 client/src/assets/facebook_icon.svg
+ create mode 100644 client/src/assets/file_upload_icon.svg
+ create mode 100644 client/src/assets/home_icon.svg
+ create mode 100644 client/src/assets/instagram_icon.svg
+ create mode 100644 client/src/assets/lesson_icon.svg
+ create mode 100644 client/src/assets/logo.svg
+ create mode 100644 client/src/assets/logo_dark.svg
+ create mode 100644 client/src/assets/microsoft_logo.svg
+ create mode 100644 client/src/assets/my_course_icon.svg
+ create mode 100644 client/src/assets/patients_icon.svg
+ create mode 100644 client/src/assets/paypal_logo.svg
+ create mode 100644 client/src/assets/person_tick_icon.svg
+ create mode 100644 client/src/assets/play_icon.svg
+ create mode 100644 client/src/assets/profile_img.png
+ create mode 100644 client/src/assets/profile_img2.png
+ create mode 100644 client/src/assets/profile_img3.png
+ create mode 100644 client/src/assets/profile_img_1.png
+ create mode 100644 client/src/assets/profile_img_2.png
+ create mode 100644 client/src/assets/profile_img_3.png
+ create mode 100644 client/src/assets/rating_star.svg
+ create mode 100644 client/src/assets/search_icon.svg
+ create mode 100644 client/src/assets/sktech.svg
+ create mode 100644 client/src/assets/star_dull_icon.svg
+ create mode 100644 client/src/assets/time_clock_icon.svg
+ create mode 100644 client/src/assets/time_left_clock_icon.svg
+ create mode 100644 client/src/assets/twitter_icon.svg
+ create mode 100644 client/src/assets/upload_area.svg
+ create mode 100644 client/src/assets/user_icon.svg
+ create mode 100644 client/src/assets/user_icon_2.svg
+ create mode 100644 client/src/assets/walmart_logo.svg
+ create mode 100644 client/src/components/educator/Footer.jsx
+ create mode 100644 client/src/components/educator/Navbar.jsx
+ create mode 100644 client/src/components/educator/SideBar.jsx
+ create mode 100644 client/src/components/student/CallToAction.jsx
+ create mode 100644 client/src/components/student/Companies.jsx
+ create mode 100644 client/src/components/student/CourseCard.jsx
+ create mode 100644 client/src/components/student/CoursesSection.jsx
+ create mode 100644 client/src/components/student/Footer.jsx
+ create mode 100644 client/src/components/student/Hero.jsx
+ create mode 100644 client/src/components/student/Loading.jsx
+ create mode 100644 client/src/components/student/Navbar.jsx
+ create mode 100644 client/src/components/student/Rating.jsx
+ create mode 100644 client/src/components/student/SearchBar.jsx
+ create mode 100644 client/src/components/student/TestimonialsSection.jsx
+ create mode 100644 client/src/context/AppContext.jsx
+ create mode 100644 client/src/index.css
+ create mode 100644 client/src/main.jsx
+ create mode 100644 client/src/pages/educator/AddCourse.jsx
+ create mode 100644 client/src/pages/educator/Dashboard.jsx
+ create mode 100644 client/src/pages/educator/Educator.jsx
+ create mode 100644 client/src/pages/educator/MyCourses.jsx
+ create mode 100644 client/src/pages/educator/StudentsEnrolled.jsx
+ create mode 100644 client/src/pages/student/CourseDetails.jsx
+ create mode 100644 client/src/pages/student/CoursesList.jsx
+ create mode 100644 client/src/pages/student/Home.jsx
+ create mode 100644 client/src/pages/student/MyEnrollments.jsx
+ create mode 100644 client/src/pages/student/Player copy.jsx
+ create mode 100644 client/src/pages/student/Player.jsx
+ create mode 100644 client/tailwind.config.js
+ create mode 100644 client/vercel.json
+ create mode 100644 client/vite.config.js
+ create mode 100644 git-lms-full-stack.png
+ create mode 100644 lms-fullstack-12-03-2026.zip
+ create mode 100644 ngrok-screen.png
+ create mode 100644 ngrok.png
+ create mode 100644 server.zip
+ create mode 100644 server/.env
+ create mode 100644 server/.env copy
+ create mode 100644 server/.env copy 2
+ create mode 100644 server/STEPS.txt
+ create mode 100644 server/configs/cloudinary.js
+ create mode 100644 server/configs/mongodb.js
+ create mode 100644 server/configs/multer.js
+ create mode 100644 server/controllers/courseController.js
+ create mode 100644 server/controllers/educatorController.js
+ create mode 100644 server/controllers/userController.js
+ create mode 100644 server/controllers/webhooks.js
+ create mode 100644 server/middlewares/authMiddleware.js
+ create mode 100644 server/models/Course.js
+ create mode 100644 server/models/CourseProgress.js
+ create mode 100644 server/models/Purchase.js
+ create mode 100644 server/models/User.js
+ create mode 100644 server/package-lock.json
+ create mode 100644 server/package.json
+ create mode 100644 server/routes/courseRoute.js
+ create mode 100644 server/routes/educatorRoutes.js
+ create mode 100644 server/routes/userRoutes.js
+ create mode 100644 server/server.js
+ create mode 100644 server/vercel.json
+
+E:\MURALI\PERN-ADVANCED-APPLICATION\6ipvxavE65KGJJXsDuYoEu\25 Full Stack Projects\16 Full-Stack-LMS-app\lms-full-stack>

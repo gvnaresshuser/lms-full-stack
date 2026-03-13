@@ -1,0 +1,99 @@
+HOW TO RUN THIS APPLICATION LOCALLY
+FIRST RUN SERVER:
+----------------
+E:\MURALI\PERN-ADVANCED-APPLICATION\6ipvxavE65KGJJXsDuYoEu\25 Full Stack Projects\16 Full-Stack-LMS-app\lms-full-stack\server
+**************
+npm run server
+**************
+-----------------------------------------------------------------------------------
+Microsoft Windows [Version 10.0.26100.6899]
+(c) Microsoft Corporation. All rights reserved.
+
+E:\MURALI\PERN-ADVANCED-APPLICATION\6ipvxavE65KGJJXsDuYoEu\25 Full Stack Projects\16 Full-Stack-LMS-app\lms-full-stack\server>npm run server
+
+> server@1.0.0 server
+> nodemon server.js
+
+[nodemon] 3.1.7
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node server.js`
+Database Connected
+Server is running on port 5000
+-----------------------------------------------------------------------------------
+NOW RUN NGROK
+OPEN CMD PROMPT AND FROM ANYWHERE RUN THE FOLLOWING COMMAND
+PROVIDED NGROK IS DOWNLOADED AND CLASSPATH IS SET IN ENVIRONMENTAL VARIABLES
+PATH SECTION
+****************
+ngrok http 5000
+****************
+Session Status                online                                                                                    Account                       gvnaressh@gmail.com (Plan: Free)                                                          Update                        update available (version 3.37.2, Ctrl-U to update)                                       Version                       3.33.1                                                                                    Region                        India (in)                                                                                Web Interface                 http://127.0.0.1:4040                                                                     Forwarding                    https://6971-2401-4900-88e1-f7de-5550-a004-3649-2fbb.ngrok-free.app -> http://localhost:5000                                                                                                                        Connections                   ttl     opn     rt1     rt5     p50     p90                                                                             0       0       0.00    0.00    0.00    0.00 
+
+CONFIGURE THIS END POINT URL FOR BOTH CLERK AND STRIPE
+********************************************************************
+https://6971-2401-4900-88e1-f7de-5550-a004-3649-2fbb.ngrok-free.app
+********************************************************************
+CLERK:
+=====
+https://dashboard.clerk.com/
+continue with google
+gvnaressh@gmail.com
+continue
+SELECT PROJECT - LMS
+CONFIGURE
+FIND
+WEBHOOKS
+END POINT URL
+EDIT
+https://6d79-2401-4900-88e1-f7de-5550-a004-3649-2fbb.ngrok-free.app/api/webhooks/clerk
+SAVE
+
+STRIPE LMS WEB HOOK:
+https://dashboard.stripe.com/
+continue with google
+gvnaressh@gmail.com
+continue
+search
+webhooks
+select charming-euphoria-this is for LMS project endpoint url
+Edit destination
+https://6971-2401-4900-88e1-f7de-5550-a004-3649-2fbb.ngrok-free.app/stripe
+Save destination
+===========================================================================
+START FRONTEND REACT JS APPLICATION
+
+***********
+npm run dev
+***********
+
+E:\MURALI\PERN-ADVANCED-APPLICATION\6ipvxavE65KGJJXsDuYoEu\25 Full Stack Projects\16 Full-Stack-LMS-app\lms-full-stack>cd client
+
+E:\MURALI\PERN-ADVANCED-APPLICATION\6ipvxavE65KGJJXsDuYoEu\25 Full Stack Projects\16 Full-Stack-LMS-app\lms-full-stack\client>npm run dev
+
+> client@0.0.0 dev
+> vite
+
+
+  VITE v5.4.11  ready in 26403 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
+Browserslist: browsers data (caniuse-lite) is 16 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+
+===========================================================================
+Open 2 browsers
+on the top right corner for 3 dots check the logged in user..
+FOR EDUCATOR DASHBOARD = USE THIS ACCOUNT
+NARESSH - gvnaressh@gmail.com
+http://localhost:5173
+===========================================================================
+FOR STUDENT = USE THIS ACCOUNT
+GV - venkatdada369@gmail.com
+http://localhost:5173
+===========================================================================

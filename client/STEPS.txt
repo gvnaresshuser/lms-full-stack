@@ -1,0 +1,4 @@
+npm i
+npm run dev
+
+E:\MURALI\PERN-ADVANCED-APPLICATION\6ipvxavE65KGJJXsDuYoEu\25 Full Stack Projects\16 Full-Stack-LMS-app\lms-full-stack
